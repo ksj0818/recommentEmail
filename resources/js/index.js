@@ -14,57 +14,53 @@ filter() 메서드는 주어진 함수의 테스트를 통과하는 모든 요�
  * 3. 자동완성 목록에 존재하는 데이터의 포함되는 키워드 입력 시 해당하는 데이터만 보여주기
  * 4. 자동완성 클릭 시 input에 해당값 넣어주기 
  */
-const emailElement = document.getElementById('emailElement');
-const listElements = document.getElementById('listElements');
-const emailList = [
+
+const emailInput = document.getElementById('emailInput');
+const emailGroup = document.getElementById('emailGroup');
+
+let emailList = [
   'google.com',
   'gmail.com',
   'naver.com',
   'nate.com',
+  'yahoo.com',
   'daum.net',
   'hanmail.net',
-  'yahoo.com',
   'outlook.com'
-]
-
+];
 let filterEmails = [];
-let id = '';
-let keyword = '';
 
-// functions
-function setEmail(id) {
-  emailElement.value = id;
-  listElements.style.display = 'none'
-}
-
-
-emailElement.addEventListener('input', function a(event) {
+// events
+emailInput.addEventListener('input', function(event) {
   let eventTargetValue = event.target.value;
-  if (eventTargetValue.includes('@')) {
-    id = eventTargetValue.substr(0, eventTargetValue.indexOf('@') + 1);
-    keyword = eventTargetValue.substr(eventTargetValue.indexOf('@') + 1, eventTargetValue.length);
-    
-    filterEmails = emailList.filter((email) => {
-      if (email.includes(keyword)) {
-        return email;
-      }
-    });
-    
-    let html = '';
-    for (let email of filterEmails) {
+  let id = eventTargetValue.substr(0, eventTargetValue.indexOf('@') + 1);
+  let keyword = eventTargetValue.substr(eventTargetValue.indexOf('@') + 1, eventTargetValue.length);
+  let html = '';
+
+  filterEmails = emailList.filter((email) => {
+    if (email.includes(keyword)) {
+      return email;
+    }
+  });
+
+  for (let email of filterEmails) {
+    if (eventTargetValue.includes('@')) {
+      emailGroup.style.display = 'block';
       html += `
-      <li class="list-group-item cursor-pointer" onclick="setEmail('${id}${email}')">${id}<mark>${email}</mark></li>
+      <li class="list-group-item email-group" onclick="setEmail('${id}${email}')">${id}<mark>${email}</mark></li>
       `
     }
-    listElements.innerHTML = html;
-    listElements.style.display = 'block'
-  } else {
-    listElements.style.display = 'none'
   }
-})
+  emailGroup.innerHTML = html;
+});
 
+emailInput.addEventListener('focus', function() {
+  emailGroup.style.display = 'block';
+});
 
-emailElement.addEventListener('focus', function() {
-  listElements.style.display = 'block'
-})
+//functions 
+function setEmail(id) {
+  emailInput.value = id;
+  emailGroup.style.display = 'none';
+}
 
